@@ -96,13 +96,13 @@ export default function FlowFreeGame() {
   };
 
   const fetchNews = async () => {
+    const topic = await getRandomTopic();
+    setCurrTopic(topic);
     const title = await getNews(currTopic);
     setNews(title);
   };
 
   useEffect(() => {
-    const topic = getRandomTopic();
-    setCurrTopic(topic);
     fetchNews();
   }, []);
 

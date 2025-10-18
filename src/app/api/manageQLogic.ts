@@ -23,7 +23,7 @@ function getReward(isLiked: boolean): number {
   return isLiked ? 1 : -1;
 }
 
-export function getRandomTopic(): Topic {
+export async function getRandomTopic(): Promise<Topic> {
   return topics[Math.floor(Math.random() * topics.length)];
 }
 
