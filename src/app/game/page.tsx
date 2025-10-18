@@ -390,10 +390,7 @@ export default function FlowFreeGame() {
               className="w-full h-full"
             >
               <div className="bg-white p-6 rounded-xl shadow-xl flex flex-col items-center justify-center h-full text-center">
-                <h2 className="text-2xl font-bold mb-2">Swipe Me! 🎉</h2>
-                <p className="text-gray-700 mb-4">
-                  You solved the map! Swipe left or right to continue.
-                </p>
+                <h2 className="text-2xl font-bold mb-2 text-black">{news}</h2>
               </div>
             </TinderCard>
           </div>
