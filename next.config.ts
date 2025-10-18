@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+export const nextConfig = {
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true, // ignores ESLint errors during build
