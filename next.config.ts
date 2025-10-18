@@ -1,11 +1,23 @@
-/** @type {import('next').NextConfig} */
-export const nextConfig = {
-  reactStrictMode: false,
+/**
+ * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
+ * for Docker builds.
+ */
+import "./src/env.js";
+
+/** @type {import("next").NextConfig} */
+const config = {
   eslint: {
-    ignoreDuringBuilds: true, // ignores ESLint errors during build
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+  /* config options here */
+  images: {
+    domains: ["images.unsplash.com", "res.cloudinary.com"],
   },
   typescript: {
-    ignoreBuildErrors: true, // ignores TS type errors during build
+    ignoreBuildErrors: true,
   },
-  // Any other Next.js config goes here
 };
+
+export default config;
