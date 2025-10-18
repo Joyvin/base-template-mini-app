@@ -15,9 +15,9 @@ const topics = [
 
 export type Topic = (typeof topics)[number];
 
-const alpha = 0.1; // learning rate
-const gamma = 0.9; // discount factor
-const epsilon = 0.2; // exploration probability
+const alpha = 0.1;
+const gamma = 0.9;
+const epsilon = 0.2;
 
 function getReward(isLiked: boolean): number {
   return isLiked ? 1 : -1;
@@ -31,7 +31,6 @@ export async function getNextTopicWithFeedback(
   currentTopic: Topic,
   isLiked: boolean
 ): Promise<Topic> {
-  // 1️⃣ Update Q-table based on feedback
   const reward = getReward(isLiked);
 
   const futureEntries = await db.qTable.findMany({
@@ -49,20 +48,22 @@ export async function getNextTopicWithFeedback(
   const currQ = entry ? entry.qValue : 0;
   const newQ = currQ + alpha * (reward + gamma * maxFutureQ - currQ);
 
+  // ✅ Correct upsert using composite unique key
   await db.qTable.upsert({
     where: { state_action: { state: currentTopic, action: "recommend_topic" } },
     create: {
       state: currentTopic,
       action: "recommend_topic",
-      nextState: getRandomTopic(), // temporary, will be chosen below
+      nextState: await getRandomTopic(),
       qValue: newQ,
     },
     update: {
+      nextState: await getRandomTopic(),
       qValue: newQ,
     },
   });
 
-  // 2️⃣ Choose next topic (epsilon-greedy)
+  // Choose next topic (epsilon-greedy)
   const entries = await db.qTable.findMany({
     where: { state: currentTopic },
   });
@@ -79,13 +80,12 @@ export async function getNextTopicWithFeedback(
 
 export async function getNews(topic: string) {
   const res = await axios.get(
-    `https://newsapi.org/v2/top-headlines?category=technology&apiKey=${process.env.NEWS_API}`
+    `https://newsapi.org/v2/top-headlines?category=${topic}&apiKey=${process.env.NEWS_API}`
   );
 
   const news = res.data;
-  const num = Math.floor(Math.random() * (news.totalResults + 1));
+  const num = Math.floor(Math.random() * news.articles.length);
 
-  const title = news.articles[num].title!;
-
+  const title = news.articles[num]?.title || "No news available";
   return title;
 }
