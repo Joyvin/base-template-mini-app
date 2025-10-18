@@ -1,0 +1,29 @@
+// prisma/schema.prisma
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql" // or "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(uuid())
+    name      String
+    email     String   @unique
+    password  String
+    progress  Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model QTable {
+    id        String   @id @default(uuid())
+    state     String // e.g. "addition-easy"
+    action    String // e.g. "increase_difficulty"
+    qValue    Float
+    nextState String
+    createdAt DateTime @default(now())
+}
